@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutina de Postura Offline</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#6366f1"/>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        :root {
+            --bg-dark: #111827;
+            --bg-card: #1f2937;
+            --border-color: #374151;
+            --text-primary: #d1d5db;
+            --text-secondary: #9ca3af;
+            --accent-primary: #6366f1;
+            --accent-secondary: #818cf8;
+            --accent-text: #e0e7ff;
+            --green: #34d399;
+            --yellow: #f59e0b;
+            --teal: #2dd4bf;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        /* --- ESTILOS DE PANTALLAS --- */
+        .screen {
+            background-color: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .screen.hidden-anim {
+            opacity: 0;
+            transform: scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- TIPOGRAFÍA Y TEXTOS --- */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+            margin: 0 0 0.5rem 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-text);
+            margin: 0 0 1rem 0;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        /* --- COMPONENTES DE UI --- */
+        .info-box {
+            background-color: var(--bg-dark);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .info-box p { margin: 0; }
+
+        .card {
+            background-color: var(--bg-dark);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .card p { margin: 0; color: var(--text-primary); }
+        .card-tip {
+            border-left: 4px solid var(--yellow);
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+        .card-tip h3 { color: var(--yellow); }
+        .card-movement h3 { color: var(--teal); }
+        .card-movement p { color: var(--teal); }
+
+        .button {
+            width: 100%;
+            background-color: var(--accent-primary);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .button:active { transform: scale(0.97); }
+        .button:hover { background-color: var(--accent-secondary); }
+
+        .control-btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .control-btn {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 50%;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
+        .control-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .control-btn:not(:disabled):active { transform: scale(0.95); }
+        .control-btn-main {
+            width: 5rem;
+            height: 5rem;
+            background-color: var(--accent-primary);
+            color: white;
+        }
+        .control-btn-main:disabled { background-color: var(--green); opacity: 0.7; }
+
+        .icon { width: 1.5em; height: 1.5em; }
+        .icon-sm { width: 1.2em; height: 1.2em; }
+        .icon-lg { width: 4rem; height: 4rem; color: var(--yellow); }
+
+        /* --- TEMPORIZADOR Y PROGRESO --- */
+        .timer-container { position: relative; width: 130px; height: 130px; margin: 1.5rem auto; }
+        .timer-display { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; color: var(--accent-text); }
+        .timer-circle { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .timer-circle-bg { stroke: var(--border-color); }
+        .timer-circle-progress { stroke: var(--accent-primary); transition: stroke-dashoffset 1s linear; }
+        .glow { box-shadow: 0 0 20px 7px rgba(99, 102, 241, 0.5); }
+
+        .progress-bar-container { width: 100%; background-color: var(--bg-dark); border-radius: 99px; height: 0.5rem; margin-top: 2rem; }
+        .progress-bar-fill { background-color: var(--accent-primary); height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+
+        /* --- ANIMACIONES --- */
+        .card-enter { animation: fadeInScaleUp 0.5s ease-out forwards; }
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        </div>
+
+    <script>
+        // --- ICONOS SVG ---
+        const ICONS = {
+            play: `<svg class="icon" viewBox="0 0 384 512" fill="currentColor"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>`,
+            pause: `<svg class="icon" viewBox="0 0 320 512" fill="currentColor"><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg>`,
+            backward: `<svg class="icon" viewBox="0 0 320 512" fill="currentColor"><path d="M267.5 440.6c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29V96c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4l-192 160L64 248v-56c0-4.4-1.6-8.4-4.5-11.5s-6.7-4.5-11-4.5H24c-8.8 0-16 7.2-16 16v144c0 8.8 7.2 16 16 16h24.5c4.3 0 8.2-1.6 11-4.5s4.5-7.1 4.5-11.5v-56l11.5 9.6 192 160z"/></svg>`,
+            forward: `<svg class="icon" viewBox="0 0 320 512" fill="currentColor"><path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4l192 160L256 248v-56c0-4.4 1.6-8.4 4.5-11.5s6.7-4.5 11-4.5H296c8.8 0 16 7.2 16 16v144c0 8.8-7.2 16-16 16h-24.5c-4.3 0-8.2-1.6-11-4.5s-4.5-7.1-4.5-11.5v-56l-11.5 9.6-192 160z"/></svg>`,
+            check: `<svg class="icon" viewBox="0 0 448 512" fill="currentColor"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>`,
+            flag: `<svg class="icon" viewBox="0 0 448 512" fill="currentColor"><path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32V64 368 480c0 17.7 14.3 32 32 32s32-14.3 32-32V352l64.3-16.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-29.4V160c0-12.8-8.3-24.7-20.8-29.4l-34.7-13c-46.2-17.4-97.5-14.7-141.7 7.4c-37.9 18.9-81.4 23.7-122.5 13.4L64 160V32z"/></svg>`,
+            trophy: `<svg class="icon-lg" viewBox="0 0 576 512" fill="currentColor"><path d="M552 64H448V48C448 21.5 426.5 0 400 0H176c-26.5 0-48 21.5-48 48v16H24C10.7 64 0 74.7 0 88V160c0 13.3 10.7 24 24 24h16v208c0 44.2 35.8 80 80 80h288c44.2 0 80-35.8 80-80V184h16c13.3 0 24-10.7 24-24V88c0-13.3-10.7-24-24-24zM160 496c-26.5 0-48-21.5-48-48V184h48v264zm112 0V184h80v312H272zm160 0V184h48v264c0 26.5-21.5 48-48 48zM432 128H144V96h288v32z"/></svg>`,
+            redo: `<svg class="icon-sm" viewBox="0 0 512 512" fill="currentColor"><path d="M463.5 224H472c13.3 0 24-10.7 24-24V72c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L413.4 128H224c-17.7 0-32 14.3-32 32s14.3 32 32 32H463.5z"/></svg>`,
+            alignLeft: `<svg class="icon-sm" viewBox="0 0 448 512" fill="currentColor"><path d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 14.3zM0 224c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM416 384c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416z"/></svg>`,
+            walking: `<svg class="icon-sm" viewBox="0 0 320 512" fill="currentColor"><path d="M208 96c26.5 0 48-21.5 48-48S234.5 0 208 0s-48 21.5-48 48 21.5 48 48 48zm-41.1 32.3l-50.6 126.4 26.3 10.5c3.4 1.3 5.8 4.5 5.8 8.1v176.7c0 4.4-3.6 8-8 8s-8-3.6-8-8V352l-29.4-11.8-43.2 43.2c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l64-64c12.5-12.5 12.5-32.8 0-45.3l-12.8-12.8 42.9-107.2 21.1 52.8c-3.1 3.8-4.9 8.6-4.9 13.8v144c0 17.7 14.3 32 32 32s32-14.3 32-32V304c0-11.2-6.5-21.2-16.4-26.3l-34.4-17.2-19.3-48.2 50.6-126.4c1.9-4.8 1.1-10.2-2-14.3s-7.9-6.6-13-6.6H176c-5.1 0-9.9 2.5-13.1 6.6s-3.9 9.5-2 14.3z"/></svg>`,
+            lightbulb: `<svg class="icon-sm" viewBox="0 0 384 512" fill="currentColor"><path d="M192 0c-44.2 0-80 35.8-80 80V128c0 17.7 14.3 32 32 32s32-14.3 32-32V80c0-8.8 7.2-16 16-16s16 7.2 16 16v48c0 17.7 14.3 32 32 32s32-14.3 32-32V80c0-44.2-35.8-80-80-80zM128 248.9c0-16.4 13.3-29.7 29.7-29.7H226.3c16.4 0 29.7 13.3 29.7 29.7c0 6.4-2.1 12.5-5.7 17.6l-32 48c-3.6 5.4-3.6 12.4 0 17.8l32 48c3.6 5.1 5.7 11.2 5.7 17.6c0 16.4-13.3 29.7-29.7 29.7H157.7c-16.4 0-29.7-13.3-29.7-29.7c0-6.4 2.1-12.5 5.7-17.6l32-48c3.6-5.4 3.6-12.4 0-17.8l-32-48c-3.6-5.1-5.7-11.2-5.7-17.6zM192 512c35.3 0 64-28.7 64-64H128c0 35.3 28.7 64 64 64z"/></svg>`,
+        };
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+        const exercises = [
+            { name: "Rotaciones Torácicas (Izquierda)", duration: 30, startPos: "Comienza en cuatro patas. Manos bajo hombros, rodillas bajo caderas. Mano izquierda detrás del cuello.", movement: "1. Baja el codo izquierdo hacia la muñeca derecha. 2. Gira el torso, elevando el codo izquierdo al techo. 3. Repite lentamente.", tip: "La rotación debe venir de tu espalda media, no de tus caderas." },
+            { name: "Rotaciones Torácicas (Derecha)", duration: 30, startPos: "Mantente en cuatro patas. Ahora, coloca tu mano derecha detrás de tu cuello.", movement: "1. Baja el codo derecho hacia la muñeca izquierda. 2. Gira el torso, elevando el codo derecho al cielo. 3. Controla el movimiento.", tip: "Exhala al subir el codo para profundizar la rotación." },
+            { name: "Postura de la Cobra", duration: 60, startPos: "Acuéstate boca abajo, pies separados. Manos en el suelo debajo de los hombros.", movement: "1. Presiona empeines y pelvis contra el suelo. 2. Usa la espalda para levantar cabeza y pecho. 3. Sostén 2s y baja.", tip: "La fuerza debe venir de tu espalda, no de los brazos. Hombros relajados." },
+            { name: "Over-And-Backs", duration: 60, startPos: "De pie, sostén una toalla o banda con agarre ancho, brazos rectos.", movement: "1. Manteniendo brazos rectos, levanta la toalla por encima de la cabeza. 2. Llévala hacia atrás y abajo. 3. Regresa al frente.", tip: "Si doblas los codos, separa más las manos. Abdomen firme." },
+            { name: "Ángeles en Pared", duration: 60, startPos: "De espaldas a una pared (talones, glúteos, espalda, cabeza en contacto). Brazos en 90° (cactus) contra la pared.", movement: "1. Desliza lentamente los brazos hacia arriba por la pared. 2. Sube solo hasta donde puedas mantener contacto. 3. Baja lento.", tip: "Es clave que la espalda baja no se separe de la pared. Aprieta el abdomen." },
+            { name: "Retracciones de Mentón", duration: 60, startPos: "Sentado o de pie, espalda y cuello rectos. Hombros relajados.", movement: "1. Lleva tu mentón y cabeza rectos hacia atrás (creando 'papada'). 2. Sostén 2-3s y relaja.", tip: "Piensa en alargar la nuca hacia el techo. El movimiento es horizontal." }
+        ];
+
+        const appContainer = document.getElementById('app-container');
+        const startScreenHTML = `<div id="start-screen" class="screen"><h1 class="title">Rutina de Postura</h1><p>Toma el control de tu postura con esta rutina guiada de 5 minutos.</p><div class="info-box"><h2>¿Cómo funciona?</h2><p>La rutina te guiará por 6 ejercicios. Lee las instrucciones, prepárate y presiona Play para iniciar el temporizador de cada uno.</p></div><button id="start-btn" class="button">${ICONS.play} Empezar Rutina</button></div>`;
+        const routineScreenHTML = `<div id="routine-screen" class="screen"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h2 id="exercise-title" style="margin:0; text-align:left;"></h2><p style="margin:0; font-weight: 600;"><span id="current-exercise-num"></span> / <span id="total-exercises"></span></p></div><div class="timer-container"><div id="timer" class="timer-display"></div><svg class="timer-circle"><circle class="timer-circle-bg" stroke-width="8" fill="transparent" r="58" cx="65" cy="65" /><circle id="timer-progress-circle" class="timer-circle-progress" stroke-width="8" stroke-linecap="round" fill="transparent" r="58" cx="65" cy="65" /></svg></div><div class="control-btn-group"><button id="prev-btn" class="control-btn">${ICONS.backward}</button><button id="main-control-btn" class="control-btn control-btn-main"><span id="main-control-icon">${ICONS.play}</span></button><button id="next-btn" class="control-btn">${ICONS.forward}</button></div><div id="instructions-container"><div class="card card-enter"><h3 style="color: var(--accent-secondary);">${ICONS.alignLeft} Posición Inicial</h3><p id="exercise-start-pos"></p></div><div class="card card-enter card-movement"><h3 style="color: var(--teal);">${ICONS.walking} Movimiento</h3><p id="exercise-movement"></p></div><div class="card card-enter card-tip"><h3>${ICONS.lightbulb} ¡Ojo! (Tip)</h3><p id="exercise-tip"></p></div></div><div class="progress-bar-container"><div id="progress-bar" class="progress-bar-fill"></div></div></div>`;
+        const endScreenHTML = `<div id="end-screen" class="screen">${ICONS.trophy}<h1 class="title">¡Rutina Completada!</h1><p>¡Excelente trabajo! La consistencia es el secreto para una mejor postura. Vuelve mañana para seguir mejorando.</p><button id="restart-btn" class="button">${ICONS.redo} Hacerla de Nuevo</button></div>`;
+
+        let currentExerciseIndex = 0, timeLeft, timerInterval, timerState = 'ready', elements = {};
+
+        function getElements(screenId) {
+            const screen = document.getElementById(screenId); if (!screen) return {};
+            const elementIds = ['start-btn', 'main-control-btn', 'next-btn', 'prev-btn', 'restart-btn', 'exercise-title', 'timer', 'exercise-start-pos', 'exercise-movement', 'exercise-tip', 'current-exercise-num', 'total-exercises', 'progress-bar', 'main-control-icon', 'timer-progress-circle', 'instructions-container'];
+            const foundElements = { screen };
+            elementIds.forEach(id => { const el = document.getElementById(id); if (el) foundElements[id] = el; });
+            return foundElements;
+        }
+
+        function switchScreen(newScreenHTML, callback) {
+            const currentScreen = appContainer.querySelector('.screen');
+            if (currentScreen) {
+                currentScreen.classList.add('hidden-anim');
+                setTimeout(() => {
+                    appContainer.innerHTML = newScreenHTML;
+                    const newScreen = appContainer.querySelector('.screen');
+                    newScreen.classList.add('hidden-anim');
+                    setTimeout(() => {
+                        newScreen.classList.remove('hidden-anim');
+                        if (callback) callback();
+                    }, 50);
+                }, 400);
+            } else {
+                appContainer.innerHTML = newScreenHTML;
+                const newScreen = appContainer.querySelector('.screen');
+                newScreen.classList.add('hidden-anim');
+                setTimeout(() => {
+                    newScreen.classList.remove('hidden-anim');
+                    if (callback) callback();
+                }, 50);
+            }
+        }
+
+        function init() {
+            switchScreen(startScreenHTML, () => {
+                elements = getElements('start-screen');
+                elements['start-btn'].addEventListener('click', startRoutine);
+            });
+        }
+
+        function startRoutine() {
+            currentExerciseIndex = 0;
+            switchScreen(routineScreenHTML, () => {
+                elements = getElements('routine-screen');
+                elements['total-exercises'].textContent = exercises.length;
+                elements['main-control-btn'].addEventListener('click', mainControlHandler);
+                elements['next-btn'].addEventListener('click', () => changeExercise(1));
+                elements['prev-btn'].addEventListener('click', () => changeExercise(-1));
+                loadExercise(currentExerciseIndex);
+            });
+        }
+
+        function loadExercise(index) {
+            clearInterval(timerInterval);
+            const exercise = exercises[index];
+            timeLeft = exercise.duration;
+            timerState = 'ready';
+            elements['exercise-title'].textContent = exercise.name;
+            elements['exercise-start-pos'].innerHTML = exercise.startPos.replace(/\d\.\s/g, '<br>$&');
+            elements['exercise-movement'].innerHTML = exercise.movement.replace(/\d\.\s/g, '<br>$&');
+            elements['exercise-tip'].textContent = exercise.tip;
+            elements['current-exercise-num'].textContent = index + 1;
+
+            Array.from(elements['instructions-container'].children).forEach((card, i) => {
+                card.style.animation = 'none';
+                card.offsetHeight;
+                card.style.animation = `fadeInScaleUp 0.5s ease-out ${i * 0.1}s forwards`;
+            });
+
+            updateUIForState();
+            updateProgressBar();
+        }
+
+        function mainControlHandler() {
+            if (timerState === 'ready' || timerState === 'paused') startTimer();
+            else if (timerState === 'running') pauseTimer();
+        }
+
+        function startTimer() {
+            if (timerState === 'ready') timeLeft = exercises[currentExerciseIndex].duration;
+            timerState = 'running';
+            updateUIForState();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) exerciseComplete();
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerState = 'paused';
+            clearInterval(timerInterval);
+            updateUIForState();
+        }
+
+        function exerciseComplete() {
+            clearInterval(timerInterval);
+            timerState = 'done';
+            updateUIForState();
+        }
+
+        function changeExercise(direction) {
+            const newIndex = currentExerciseIndex + direction;
+            if (newIndex >= 0 && newIndex < exercises.length) {
+                currentExerciseIndex = newIndex;
+                loadExercise(currentExerciseIndex);
+            } else if (newIndex >= exercises.length) {
+                finishRoutine();
+            }
+        }
+
+        function finishRoutine() {
+            switchScreen(endScreenHTML, () => {
+                elements = getElements('end-screen');
+                elements['restart-btn'].addEventListener('click', init);
+            });
+        }
+
+        function updateUIForState() {
+            updateTimerDisplay();
+            elements['main-control-btn'].disabled = false;
+            const iconContainer = elements['main-control-icon'];
+
+            if (timerState === 'ready' || timerState === 'paused') iconContainer.innerHTML = ICONS.play;
+            else if (timerState === 'running') iconContainer.innerHTML = ICONS.pause;
+            else if (timerState === 'done') {
+                iconContainer.innerHTML = ICONS.check;
+                elements['main-control-btn'].disabled = true;
+            }
+
+            elements['prev-btn'].disabled = (currentExerciseIndex === 0);
+            elements['next-btn'].disabled = (timerState !== 'done');
+            elements['next-btn'].classList.toggle('glow', timerState === 'done');
+            elements['next-btn'].innerHTML = (currentExerciseIndex === exercises.length - 1 && timerState === 'done') ? ICONS.flag : ICONS.forward;
+        }
+
+        function updateTimerDisplay() {
+            const duration = exercises[currentExerciseIndex].duration;
+            const displayTime = (timerState === 'ready') ? duration : timeLeft;
+            elements['timer'].textContent = `${Math.floor(displayTime / 60)}:${(displayTime % 60).toString().padStart(2, '0')}`;
+            const circle = elements['timer-progress-circle'];
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            const dashOffset = circumference - (displayTime / duration) * circumference;
+            circle.style.strokeDashoffset = dashOffset;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentExerciseIndex) / exercises.length) * 100;
+            elements['progress-bar'].style.width = `${progress}%`;
+        }
+
+        // Iniciar la aplicación
+        init();
+        
+        // --- REGISTRO DEL SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado con éxito:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Fallo en el registro del ServiceWorker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "Rutina de Postura Offline",
+  "short_name": "Rutina Postura",
+  "description": "Una rutina guiada de 5 minutos para mejorar tu postura.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

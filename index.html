@@ -227,6 +227,43 @@
         const endScreenHTML = `<div id="end-screen" class="screen">${ICONS.trophy}<h1 class="title">¡Rutina Completada!</h1><p>¡Excelente trabajo! La consistencia es el secreto para una mejor postura. Vuelve mañana para seguir mejorando.</p><button id="restart-btn" class="button">${ICONS.redo} Hacerla de Nuevo</button></div>`;
 
         let currentExerciseIndex = 0, timeLeft, timerInterval, timerState = 'ready', elements = {};
+        
+        // --- NUEVA FUNCIÓN DE SONIDO (AÑADIDO) ---
+        // Genera un sonido usando la Web Audio API del navegador, sin necesidad de archivos.
+        function playSound(frequency = 900, duration = 150) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine'; // Tipo de onda (un tono limpio)
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // Frecuencia en Hz
+                
+                // Conectar nodos: oscilador -> control de volumen -> altavoces
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                // Control de volumen para evitar un "clic" al final
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration / 1000);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration / 1000);
+            } catch (e) {
+                console.error("No se pudo reproducir el sonido:", e);
+            }
+        }
+
+        // --- NUEVA FUNCIÓN AUXILIAR PARA CORREGIR TEXTO (AÑADIDO) ---
+        function formatNumberedText(text) {
+            // Reemplaza cada "1. ", "2. ", etc., con un salto de línea antes.
+            let formattedText = text.replace(/\d\.\s/g, '<br>$&');
+            // CORRECCIÓN: Si el texto resultante empieza con un salto de línea, lo elimina.
+            if (formattedText.startsWith('<br>')) {
+                formattedText = formattedText.substring(4);
+            }
+            return formattedText;
+        }
 
         function getElements(screenId) {
             const screen = document.getElementById(screenId); if (!screen) return {};
@@ -285,8 +322,12 @@
             timeLeft = exercise.duration;
             timerState = 'ready';
             elements['exercise-title'].textContent = exercise.name;
-            elements['exercise-start-pos'].innerHTML = exercise.startPos.replace(/\d\.\s/g, '<br>$&');
-            elements['exercise-movement'].innerHTML = exercise.movement.replace(/\d\.\s/g, '<br>$&');
+
+            // --- CÓDIGO MODIFICADO PARA CORREGIR EL ESPACIO EXTRA ---
+            elements['exercise-start-pos'].innerHTML = formatNumberedText(exercise.startPos);
+            elements['exercise-movement'].innerHTML = formatNumberedText(exercise.movement);
+            // --- FIN DE LA MODIFICACIÓN ---
+
             elements['exercise-tip'].textContent = exercise.tip;
             elements['current-exercise-num'].textContent = index + 1;
 
@@ -325,6 +366,11 @@
         function exerciseComplete() {
             clearInterval(timerInterval);
             timerState = 'done';
+            
+            // --- CÓDIGO AÑADIDO PARA REPRODUCIR SONIDO ---
+            playSound();
+            // --- FIN DEL CÓDIGO AÑADIDO ---
+
             updateUIForState();
         }
 

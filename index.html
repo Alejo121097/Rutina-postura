@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rutina de Postura de 5 Minutos</title>
+    <title>Rutina de Postura Offline</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
@@ -213,21 +213,23 @@
 
         // --- LÓGICA DE LA APLICACIÓN ---
         const exercises = [
-            [span_0](start_span){ name: "Rotaciones Torácicas (Izquierda)", duration: 30, startPos: "Ponte en cuatro patas y sienta tus caderas hacia atrás, hacia los talones. Coloca una mano extendida al frente y la otra detrás de tu nuca.[span_0](end_span)", movement: "1. [span_1](start_span)Baja el codo hacia el suelo.[span_1](end_span) 2. [span_2](start_span)Siguiendo el codo con la mirada, rótalo hacia el techo tan lejos como puedas.[span_2](end_span) 3. [span_3](start_span)Exhala mientras subes y empuja el suelo con la mano de apoyo.[span_3](end_span) 4. [span_4](start_span)Mantén la posición arriba brevemente y repite.[span_4](end_span)[span_5](start_span)", tip: "Cuanto más cerca estén tus glúteos de tus talones, más abajo en tu columna sentirás el estiramiento.[span_5](end_span) [span_6](start_span)Prueba diferentes posiciones de rodillas para trabajar distintas áreas de la espalda y enfócate donde sientas más tensión.[span_6](end_span)" },
-            { name: "Rotaciones Torácicas (Derecha)", duration: 30, startPos: "Ponte en cuatro patas y sienta tus caderas hacia atrás, hacia los talones. [span_7](start_span)Coloca una mano extendida al frente y la otra detrás de tu nuca.[span_7](end_span)", movement: "1. [span_8](start_span)Baja el codo hacia el suelo.[span_8](end_span) 2. [span_9](start_span)Siguiendo el codo con la mirada, rótalo hacia el techo tan lejos como puedas.[span_9](end_span) 3. [span_10](start_span)Exhala mientras subes y empuja el suelo con la mano de apoyo.[span_10](end_span) 4. [span_11](start_span)Mantén la posición arriba brevemente y repite.[span_11](end_span)[span_12](start_span)", tip: "Cuanto más cerca estén tus glúteos de tus talones, más abajo en tu columna sentirás el estiramiento.[span_12](end_span) [span_13](start_span)Prueba diferentes posiciones de rodillas para trabajar distintas áreas de la espalda y enfócate donde sientas más tensión.[span_13](end_span)" },
-            [span_14](start_span){ name: "Postura de la Cobra", duration: 60, startPos: "Acuéstate sobre tu estómago con los pies separados al ancho de las caderas.[span_14](end_span) [span_15](start_span)Apunta los dedos de los pies y coloca las manos directamente debajo de tus hombros.[span_15](end_span) [span_16](start_span)Contrae los cuádriceps para levantar las rodillas del suelo y lleva los omóplatos hacia abajo y atrás.[span_16](end_span)[span_17](start_span)", movement: "Usando los músculos de tu espalda media, lleva la parte superior de tu cuerpo hacia adelante y arriba.[span_17](end_span) [span_18](start_span)Intenta levantar al menos el pecho del suelo, subiendo solo hasta donde sea cómodo y sin dolor.[span_18](end_span) [span_19](start_span)Mantén la posición más alta por uno o dos segundos, y luego baja.[span_19](end_span)[span_20](start_span)", tip: "No estás forzando la subida empujando con los brazos; estos solo están para dar estabilidad.[span_20](end_span) [span_21](start_span)Al hacerlo correctamente, sentirás los músculos de tu espalda media y baja activarse para levantar el torso.[span_21](end_span)" },
-            [span_22](start_span){ name: "Over-And-Backs", duration: 60, startPos: "Toma una banda, toalla o palo de escoba con un agarre amplio por encima de la mano.[span_22](end_span)[span_23](start_span)", movement: "Separa las manos para crear tensión y luego levanta la banda o el palo por encima y detrás de tu espalda, como si dibujaras un gran círculo.[span_23](end_span) [span_24](start_span)Intenta ir lo más atrás que puedas cómodamente.[span_24](end_span) [span_25](start_span)Evita arquear la espalda baja y mantén el abdomen contraído.[span_25](end_span)[span_26](start_span)", tip: "Puedes hacer este ejercicio más difícil con el tiempo usando un agarre más estrecho o una banda más gruesa.[span_26](end_span)" },
-            [span_27](start_span){ name: "Ángeles Inversos en Pared", duration: 60, startPos: "Arrodíllate frente a una pared, con las rodillas, el pecho y la frente en contacto con ella.[span_27](end_span)[span_28](start_span)", movement: "Contrae el abdomen y, manteniendo los brazos rectos, muévelos en un gran círculo por encima de la cabeza tan alto como puedas, y luego de regreso hacia abajo.[span_28](end_span) [span_29](start_span)Al hacerlo, mantén los brazos y las manos a un par de pulgadas de la pared y piensa en empujar los brazos hacia afuera para activar mejor los músculos de la espalda.[span_29](end_span)[span_30](start_span)", tip: "Si sientes el ejercicio más en los trapecios superiores, prueba a hacerlo en el suelo o en un banco, ya que los músculos de tu espalda media pueden no ser aún lo suficientemente fuertes.[span_30](end_span)" },
-            [span_31](start_span){ name: "Chin Tucks (Retracción de Mentón)", duration: 60, startPos: "Siéntate en una silla, mira al frente y lleva los hombros hacia atrás.[span_31](end_span)[span_32](start_span)", movement: "Lleva tu barbilla recta hacia atrás para alinear tu cuello con tu columna.[span_32](end_span) [span_33](start_span)Es un movimiento muy pequeño, no intentes forzar la cabeza hacia atrás.[span_33](end_span) [span_34](start_span)Deberías sentir cómo trabajan los músculos profundos debajo de tu chin.[span_34](end_span) [span_35](start_span)Mantén la posición final por 1 segundo.[span_35](end_span)[span_36](start_span)", tip: "Puedes hacerlos contra una pared para no hacer trampa y tener el objetivo de tocar la pared con la nuca.[span_36](end_span) [span_37](start_span)Para progresar, añade una retracción de mentón (papada) al final del movimiento y mantenla por uno o dos segundos.[span_37](end_span)" }
+            { name: "Rotaciones Torácicas (Izquierda)", duration: 30, startPos: "Comienza en cuatro patas. Manos bajo hombros, rodillas bajo caderas. Mano izquierda detrás del cuello.", movement: "1. Baja el codo izquierdo hacia la muñeca derecha. 2. Gira el torso, elevando el codo izquierdo al techo. 3. Repite lentamente.", tip: "La rotación debe venir de tu espalda media, no de tus caderas." },
+            { name: "Rotaciones Torácicas (Derecha)", duration: 30, startPos: "Mantente en cuatro patas. Ahora, coloca tu mano derecha detrás de tu cuello.", movement: "1. Baja el codo derecho hacia la muñeca izquierda. 2. Gira el torso, elevando el codo derecho al cielo. 3. Controla el movimiento.", tip: "Exhala al subir el codo para profundizar la rotación." },
+            { name: "Postura de la Cobra", duration: 60, startPos: "Acuéstate boca abajo, pies separados. Manos en el suelo debajo de los hombros.", movement: "1. Presiona empeines y pelvis contra el suelo. 2. Usa la espalda para levantar cabeza y pecho. 3. Sostén 2s y baja.", tip: "La fuerza debe venir de tu espalda, no de los brazos. Hombros relajados." },
+            { name: "Over-And-Backs", duration: 60, startPos: "De pie, sostén una toalla o banda con agarre ancho, brazos rectos.", movement: "1. Manteniendo brazos rectos, levanta la toalla por encima de la cabeza. 2. Llévala hacia atrás y abajo. 3. Regresa al frente.", tip: "Si doblas los codos, separa más las manos. Abdomen firme." },
+            { name: "Ángeles en Pared", duration: 60, startPos: "De espaldas a una pared (talones, glúteos, espalda, cabeza en contacto). Brazos en 90° (cactus) contra la pared.", movement: "1. Desliza lentamente los brazos hacia arriba por la pared. 2. Sube solo hasta donde puedas mantener contacto. 3. Baja lento.", tip: "Es clave que la espalda baja no se separe de la pared. Aprieta el abdomen." },
+            { name: "Retracciones de Mentón", duration: 60, startPos: "Sentado o de pie, espalda y cuello rectos. Hombros relajados.", movement: "1. Lleva tu mentón y cabeza rectos hacia atrás (creando 'papada'). 2. Sostén 2-3s y relaja.", tip: "Piensa en alargar la nuca hacia el techo. El movimiento es horizontal." }
         ];
 
         const appContainer = document.getElementById('app-container');
-        [span_38](start_span)const startScreenHTML = `<div id="start-screen" class="screen"><h1 class="title">Rutina de Postura</h1><p>Pasar mucho tiempo sentado en una posición encorvada puede afectar tu altura y movilidad.[span_38](end_span) Esta rutina combate esos efectos.</p><div class="info-box"><h2>¿Cómo funciona?</h2><p>Realiza la rutina al menos una vez al día. [span_39](start_span)Para resultados más rápidos, puedes hacerla 2-3 veces al día.[span_39](end_span) [span_40](start_span)Concéntrate en la calidad del movimiento, no en la cantidad de repeticiones.[span_40](end_span)</p></div><button id="start-btn" class="button">${ICONS.play} Empezar Rutina</button></div>`;
+        const startScreenHTML = `<div id="start-screen" class="screen"><h1 class="title">Rutina de Postura</h1><p>Toma el control de tu postura con esta rutina guiada de 5 minutos.</p><div class="info-box"><h2>¿Cómo funciona?</h2><p>La rutina te guiará por 6 ejercicios. Lee las instrucciones, prepárate y presiona Play para iniciar el temporizador de cada uno.</p></div><button id="start-btn" class="button">${ICONS.play} Empezar Rutina</button></div>`;
         const routineScreenHTML = `<div id="routine-screen" class="screen"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"><h2 id="exercise-title" style="margin:0; text-align:left;"></h2><p style="margin:0; font-weight: 600;"><span id="current-exercise-num"></span> / <span id="total-exercises"></span></p></div><div class="timer-container"><div id="timer" class="timer-display"></div><svg class="timer-circle"><circle class="timer-circle-bg" stroke-width="8" fill="transparent" r="58" cx="65" cy="65" /><circle id="timer-progress-circle" class="timer-circle-progress" stroke-width="8" stroke-linecap="round" fill="transparent" r="58" cx="65" cy="65" /></svg></div><div class="control-btn-group"><button id="prev-btn" class="control-btn">${ICONS.backward}</button><button id="main-control-btn" class="control-btn control-btn-main"><span id="main-control-icon">${ICONS.play}</span></button><button id="next-btn" class="control-btn">${ICONS.forward}</button></div><div id="instructions-container"><div class="card card-enter"><h3 style="color: var(--accent-secondary);">${ICONS.alignLeft} Posición Inicial</h3><p id="exercise-start-pos"></p></div><div class="card card-enter card-movement"><h3 style="color: var(--teal);">${ICONS.walking} Movimiento</h3><p id="exercise-movement"></p></div><div class="card card-enter card-tip"><h3>${ICONS.lightbulb} ¡Ojo! (Tip)</h3><p id="exercise-tip"></p></div></div><div class="progress-bar-container"><div id="progress-bar" class="progress-bar-fill"></div></div></div>`;
         const endScreenHTML = `<div id="end-screen" class="screen">${ICONS.trophy}<h1 class="title">¡Rutina Completada!</h1><p>¡Excelente trabajo! La consistencia es el secreto para una mejor postura. Vuelve mañana para seguir mejorando.</p><button id="restart-btn" class="button">${ICONS.redo} Hacerla de Nuevo</button></div>`;
 
         let currentExerciseIndex = 0, timeLeft, timerInterval, timerState = 'ready', elements = {};
         
+        // --- FUNCIÓN DE SONIDO BASE (SIN CAMBIOS) ---
+        // Esta función auxiliar genera un único pitido.
         function playSingleBeep(frequency = 900, duration = 150) {
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -246,18 +248,22 @@
             }
         }
 
+        // --- NUEVA FUNCIÓN DE ALARMA (MODIFICADO) ---
+        // Llama a la función de pitido varias veces para crear una secuencia.
         function playAlarmSound() {
-            const repeatCount = 3; 
-            const delayBetweenBeeps = 200; 
+            const repeatCount = 3; // Número de pitidos
+            const delayBetweenBeeps = 200; // Pausa entre pitidos en milisegundos
 
             for (let i = 0; i < repeatCount; i++) {
                 setTimeout(() => {
+                    // El último pitido es un poco más agudo para señalar el final.
                     const frequency = (i === repeatCount - 1) ? 1000 : 800;
-                    playSingleBeep(frequency, 120); 
+                    playSingleBeep(frequency, 120); // Toca un pitido corto
                 }, i * delayBetweenBeeps);
             }
         }
         
+        // --- FUNCIÓN AUXILIAR PARA CORREGIR TEXTO (SIN CAMBIOS) ---
         function formatNumberedText(text) {
             let formattedText = text.replace(/\d\.\s/g, '<br>$&');
             if (formattedText.startsWith('<br>')) {
@@ -362,7 +368,9 @@
             clearInterval(timerInterval);
             timerState = 'done';
             
+            // --- CÓDIGO MODIFICADO PARA REPRODUCIR LA ALARMA ---
             playAlarmSound();
+            // --- FIN DEL CÓDIGO MODIFICADO ---
 
             updateUIForState();
         }

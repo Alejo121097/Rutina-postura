@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rutina-postura-cache-v3';
+const CACHE_NAME = 'rutina-postura-cache-v5';
 // Como tu app es un solo archivo, solo necesitamos cachear el archivo principal.
 const urlsToCache = [
   './' 
